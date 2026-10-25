@@ -1,0 +1,120 @@
+
+== caller ==
+{
+    "UserId": "AROAW4L5ZGKOOYOINAHBJ:247814e8-50f1-703b-8a6f-230777d9a182",
+    "Account": "473247068828",
+    "Arn": "arn:aws:sts::473247068828:assumed-role/AccountFullAccessRole/247814e8-50f1-703b-8a6f-230777d9a182"
+}
+
+== public-access ==
+{
+    "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+    }
+}
+
+== versioning ==
+{
+    "Status": "Enabled"
+}
+
+== objects ==
+2026-10-25 13:55:12      61710 site/cv.pdf
+2026-10-25 13:55:13        662 site/index.html
+2026-10-25 13:55:14        217 site/style.css
+
+== ec2-policy ==
+{
+    "RoleName": "cv-ec2-role-23l-3099",
+    "PolicyName": "cv-ec2-s3-read",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "ReadSiteObjects",
+                "Effect": "Allow",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::cv-23l-3099/site/*"
+            },
+            {
+                "Sid": "ListSitePrefixOnly",
+                "Effect": "Allow",
+                "Action": "s3:ListBucket",
+                "Resource": "arn:aws:s3:::cv-23l-3099",
+                "Condition": {
+                    "StringLike": {
+                        "s3:prefix": "site/*"
+                    }
+                }
+            }
+        ]
+    }
+}
+
+== lambda-policy ==
+{
+    "AttachedPolicies": [
+        {
+            "PolicyName": "AWSLambdaBasicExecutionRole",
+            "PolicyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        }
+    ]
+}
+{
+    "RoleName": "cv-lambda-role-23l-3099",
+    "PolicyName": "cv-lambda-s3-read",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "ReadSiteObjects",
+                "Effect": "Allow",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::cv-23l-3099/site/*"
+            }
+        ]
+    }
+}
+
+== security-group ==
+[
+    []
+]
+
+== instance ==
+[
+    {
+        "Id": "i-0f9fa5ce467bd1461",
+        "Type": "t3.micro",
+        "IMDS": "required",
+        "Profile": "arn:aws:iam::473247068828:instance-profile/cv-ec2-role-23l-3099"
+    }
+]
+
+== endpoints ==
+EC2    /           http://54.253.18.104/ -> (curl failed)
+EC2    /style.css  http://54.253.18.104/style.css -> (curl failed)
+EC2    /cv.pdf     http://54.253.18.104/cv.pdf -> (curl failed)
+Lambda /           https://plizupvtyjd4ezbbfdndi7omsy0sxycp.lambda-url.ap-southeast-2.on.aws/ -> status=200 content_type=text/html
+Lambda /style.css  https://plizupvtyjd4ezbbfdndi7omsy0sxycp.lambda-url.ap-southeast-2.on.aws/style.css -> status=200 content_type=text/css
+Lambda /cv.pdf     https://plizupvtyjd4ezbbfdndi7omsy0sxycp.lambda-url.ap-southeast-2.on.aws/cv.pdf -> status=200 content_type=application/pdf
+Lambda /anything   https://plizupvtyjd4ezbbfdndi7omsy0sxycp.lambda-url.ap-southeast-2.on.aws/anything -> status=404 content_type=text/html
+S3 direct          https://cv-23l-3099.s3.ap-southeast-2.amazonaws.com/site/index.html -> status=403 content_type=application/xml
+
+== lambda-logs ==
+2026-10-25T17:09:18.355000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 END RequestId: 5c7e39b3-1c1b-4211-abd2-ba4c3850683f
+2026-10-25T17:09:18.355000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 REPORT RequestId: 5c7e39b3-1c1b-4211-abd2-ba4c3850683f	Duration: 57.23 ms	Billed Duration: 58 ms	Memory Size: 128 MB	Max Memory Used: 100 MB
+2026-10-25T17:09:18.394000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 START RequestId: b73d6e72-f533-4226-9b6c-ecbd5642f6b8 Version: $LATEST
+2026-10-25T17:09:18.548000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 {"fn": "cv-func-23l-3099", "path": "/cv.pdf", "status": 200, "ms": 153}
+2026-10-25T17:09:18.561000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 END RequestId: b73d6e72-f533-4226-9b6c-ecbd5642f6b8
+2026-10-25T17:09:18.561000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 REPORT RequestId: b73d6e72-f533-4226-9b6c-ecbd5642f6b8	Duration: 166.32 ms	Billed Duration: 167 ms	Memory Size: 128 MB	Max Memory Used: 100 MB
+2026-10-25T17:09:18.594000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 START RequestId: a23bdbd0-d279-4b79-a6f5-d4fa13fb6acd Version: $LATEST
+2026-10-25T17:09:18.595000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 {"fn": "cv-func-23l-3099", "path": "/anything", "status": 404, "ms": 0}
+2026-10-25T17:09:18.596000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 END RequestId: a23bdbd0-d279-4b79-a6f5-d4fa13fb6acd
+2026-10-25T17:09:18.596000+00:00 2026/10/25/[$LATEST]8217736d2dab4732bb28f25d09d06c19 REPORT RequestId: a23bdbd0-d279-4b79-a6f5-d4fa13fb6acd	Duration: 1.54 ms	Billed Duration: 2 ms	Memory Size: 128 MB	Max Memory Used: 100 MB
+
+== log-retention ==
+/aws/lambda/cv-func-23l-3099	7
